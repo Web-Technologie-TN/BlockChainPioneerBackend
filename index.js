@@ -7,6 +7,8 @@ const app = express();
 
 // 👇️ configure CORS
 app.use(cors());
+app.use(express.static('assets/images'));
+
 
 app.get('/latestblock', function (req, res, next) {
     try {
@@ -35,18 +37,6 @@ app.get('/rawblock', function (req, res, next) {
 app.get('/rawtx', function (req, res, next) {
     try {
         request('https://blockchain.info/rawtx/8e59ee7cfb325934ec4571f294615b59711e7d22bb1a640ca3d0127063dc50d2', function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                res.json(JSON.parse(response.body));
-            }
-        });
-    } catch (ex) {
-        res.json({});
-    }
-});
-
-app.get('/bitcoin', function (req, res, next) {
-    try {
-        request('https://api.blockchain.info/charts/total-bitcoins?timespan=1year&sampled=true&metadata=false&daysAverageString=1d&cors=true&format=json', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 res.json(JSON.parse(response.body));
             }
@@ -139,6 +129,10 @@ app.get('/blocks', function (req, res, next) {
         res.json({});
     }
 });
+
+const charts = require('./charts.js');
+
+charts(app);
 
 const PORT = 5000;
 
